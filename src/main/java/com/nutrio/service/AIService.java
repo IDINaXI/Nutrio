@@ -120,14 +120,57 @@ public class AIService {
         if (allergies == null || allergies.isEmpty()) {
             return false;
         }
+        
         logger.info("Checking ingredients: {} against allergies: {}", ingredients, allergies);
-        boolean contains = ingredients.stream()
-            .anyMatch(ingredient -> allergies.stream()
-                .anyMatch(allergy -> ingredient.toLowerCase().contains(allergy.toLowerCase())));
-        if (contains) {
-            logger.info("Found allergen in ingredients!");
+        
+        // Создаем список вариаций аллергенов
+        List<String> allergenVariations = new ArrayList<>();
+        for (String allergy : allergies) {
+            String lowerAllergy = allergy.toLowerCase();
+            allergenVariations.add(lowerAllergy);
+            // Добавляем вариации написания
+            allergenVariations.add(lowerAllergy + "ая");
+            allergenVariations.add(lowerAllergy + "ое");
+            allergenVariations.add(lowerAllergy + "ый");
+            allergenVariations.add(lowerAllergy + "ые");
+            allergenVariations.add(lowerAllergy + "ой");
+            allergenVariations.add(lowerAllergy + "ой");
+            // Добавляем общие суффиксы
+            allergenVariations.add(lowerAllergy + "ый");
+            allergenVariations.add(lowerAllergy + "ая");
+            allergenVariations.add(lowerAllergy + "ое");
+            // Добавляем производные
+            if (lowerAllergy.endsWith("а")) {
+                allergenVariations.add(lowerAllergy.substring(0, lowerAllergy.length() - 1) + "ы");
+            }
+            if (lowerAllergy.endsWith("й")) {
+                allergenVariations.add(lowerAllergy.substring(0, lowerAllergy.length() - 1) + "я");
+            }
         }
-        return contains;
+        
+        // Проверяем каждый ингредиент
+        for (String ingredient : ingredients) {
+            String lowerIngredient = ingredient.toLowerCase();
+            // Удаляем количество в скобках для проверки
+            lowerIngredient = lowerIngredient.replaceAll("\\([^)]*\\)", "").trim();
+            
+            // Проверяем на точное совпадение
+            for (String allergen : allergenVariations) {
+                if (lowerIngredient.equals(allergen) || 
+                    lowerIngredient.startsWith(allergen + " ") || 
+                    lowerIngredient.endsWith(" " + allergen) || 
+                    lowerIngredient.contains(" " + allergen + " ") ||
+                    lowerIngredient.contains(allergen + "ый") ||
+                    lowerIngredient.contains(allergen + "ая") ||
+                    lowerIngredient.contains(allergen + "ое") ||
+                    lowerIngredient.contains(allergen + "ые")) {
+                    logger.warn("Found allergen variation '{}' in ingredient '{}'", allergen, ingredient);
+                    return true;
+                }
+            }
+        }
+        
+        return false;
     }
 
     private List<Meal> generateLunch(User user, Map<String, Double> macros) {
@@ -496,6 +539,8 @@ public class AIService {
             Все блюда, ингредиенты и рецепты — на русском языке, с учетом сезонности и традиций России.
             Калорийность и макроэлементы должны быть реалистичными и соответствовать целям пользователя.
             
+            %s
+            
             Пример одного дня:
             {
               "day": "Понедельник",
@@ -533,6 +578,18 @@ public class AIService {
                     - Аллергии: %s
                     ВНИМАНИЕ! СТРОГО ЗАПРЕЩЕНО включать в план питания любые блюда, содержащие эти аллергены!
                     Каждое блюдо должно быть безопасным для пользователя.
+                    """, String.join(", ", user.getAllergies()))
+                : "",
+            user.getAllergies() != null && !user.getAllergies().isEmpty() 
+                ? String.format("""
+                    ВАЖНО! У пользователя аллергия на: %s
+                    СТРОГО ЗАПРЕЩЕНО использовать:
+                    1. Эти продукты в любом виде
+                    2. Производные этих продуктов
+                    3. Продукты, содержащие эти аллергены
+                    4. Продукты, которые могут содержать следы этих аллергенов
+                    
+                    Перед добавлением каждого ингредиента проверяй, не содержит ли он аллергенов!
                     """, String.join(", ", user.getAllergies()))
                 : ""
         );
@@ -621,6 +678,8 @@ public class AIService {
             Все блюда, ингредиенты и рецепты — на русском языке, с учетом сезонности и традиций России.
             Калорийность и макроэлементы должны быть реалистичными и соответствовать целям пользователя.
             
+            %s
+            
             Пример ответа:
             {
               "day": "%s",
@@ -662,6 +721,18 @@ public class AIService {
                     """, String.join(", ", user.getAllergies()))
                 : "",
             day,
+            user.getAllergies() != null && !user.getAllergies().isEmpty() 
+                ? String.format("""
+                    ВАЖНО! У пользователя аллергия на: %s
+                    СТРОГО ЗАПРЕЩЕНО использовать:
+                    1. Эти продукты в любом виде
+                    2. Производные этих продуктов
+                    3. Продукты, содержащие эти аллергены
+                    4. Продукты, которые могут содержать следы этих аллергенов
+                    
+                    Перед добавлением каждого ингредиента проверяй, не содержит ли он аллергенов!
+                    """, String.join(", ", user.getAllergies()))
+                : "",
             day
         );
     }
