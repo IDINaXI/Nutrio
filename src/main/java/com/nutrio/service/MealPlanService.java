@@ -69,44 +69,57 @@ public class MealPlanService {
     }
 
     private String createPrompt(User user) {
-        return String.format(
-            "Ты — ИИ-диетолог. Составь подробный план питания на 7 дней (неделю) в формате JSON. " +
-            "Каждый день должен включать: завтрак, обед, ужин, перекус, общие калории и макронутриенты (белки, жиры, углеводы). " +
-            "Все поля должны быть заполнены. Блюда не должны повторяться в течение недели. Верни ТОЛЬКО валидный JSON объект, без пояснений.\n" +
-            "Характеристики пользователя:\n" +
-            "- Возраст: %d\n" +
-            "- Пол: %s\n" +
-            "- Вес: %.1f кг\n" +
-            "- Рост: %.1f см\n" +
-            "- Уровень активности: %s\n" +
-            "- Цель: %s\n" +
-            "%s\n" +
-            "Требуемая структура JSON (верни ТОЛЬКО эту структуру):\n" +
-            "{\n" +
-            "  \"days\": [\n" +
-            "    {\n" +
-            "      \"date\": \"YYYY-MM-DD\",\n" +
-            "      \"breakfast\": { ... },\n" +
-            "      \"lunch\": { ... },\n" +
-            "      \"dinner\": { ... },\n" +
-            "      \"snack\": { ... },\n" +
-            "      \"totalCalories\": number,\n" +
-            "      \"macronutrients\": {\n" +
-            "        \"proteins\": number,\n" +
-            "        \"fats\": number,\n" +
-            "        \"carbs\": number\n" +
-            "      }\n" +
-            "    }\n" +
-            "  ]\n" +
-            "}\n" +
-            "Правила:\n" +
-            "1. Верни ТОЛЬКО JSON объект, без дополнительного текста\n" +
-            "2. Все значения калорий и макронутриентов должны быть реалистичными числами\n" +
-            "3. Общие калории за день должны соответствовать потребностям пользователя\n" +
-            "4. Убедись, что все поля JSON присутствуют и правильно отформатированы\n" +
-            "5. Блюда не должны повторяться в течение недели\n" +
-            "6. Каждое блюдо должно включать ингредиенты и базовый рецепт\n" +
-            "%s",
+        String prompt = String.format("""
+            Ты — ИИ-диетолог. Составь подробный план питания на 7 дней (неделю) в формате JSON.
+            Каждый день должен включать: завтрак, обед, ужин, перекус, общие калории и макронутриенты (белки, жиры, углеводы).
+            Все поля должны быть заполнены. Блюда не должны повторяться в течение недели. Верни ТОЛЬКО валидный JSON объект, без пояснений.
+
+            Характеристики пользователя:
+            - Возраст: %d
+            - Пол: %s
+            - Вес: %.1f кг
+            - Рост: %.1f см
+            - Уровень активности: %s
+            - Цель: %s
+            %s
+
+            Требуемая структура JSON (верни ТОЛЬКО эту структуру):
+            {
+                "days": [
+                    {
+                        "date": "YYYY-MM-DD",
+                        "breakfast": {
+                            "name": "string",
+                            "mealType": "BREAKFAST",
+                            "calories": number,
+                            "proteins": number,
+                            "fats": number,
+                            "carbohydrates": number,
+                            "ingredients": ["string"],
+                            "recipe": "string"
+                        },
+                        "lunch": { ... },
+                        "dinner": { ... },
+                        "snack": { ... },
+                        "totalCalories": number,
+                        "macronutrients": {
+                            "proteins": number,
+                            "fats": number,
+                            "carbs": number
+                        }
+                    }
+                ]
+            }
+
+            Правила:
+            1. Верни ТОЛЬКО JSON объект, без дополнительного текста
+            2. Все значения калорий и макронутриентов должны быть реалистичными числами
+            3. Общие калории за день должны соответствовать потребностям пользователя
+            4. Убедись, что все поля JSON присутствуют и правильно отформатированы
+            5. Блюда не должны повторяться в течение недели
+            6. Каждое блюдо должно включать ингредиенты и базовый рецепт
+            %s
+            """,
             user.getAge(),
             user.getGender(),
             user.getWeight(),
@@ -114,12 +127,15 @@ public class MealPlanService {
             user.getActivityLevel(),
             user.getGoal(),
             user.getAllergies() != null && !user.getAllergies().isEmpty() 
-                ? String.format("- Аллергии: %s\n", String.join(", ", user.getAllergies()))
+                ? String.format("- Аллергии: %s", String.join(", ", user.getAllergies()))
                 : "",
             user.getAllergies() != null && !user.getAllergies().isEmpty() 
-                ? "7. СТРОГО ИЗБЕГАЙ использования любых ингредиентов, на которые у пользователя аллергия\n"
+                ? "7. СТРОГО ИЗБЕГАЙ использования любых ингредиентов, на которые у пользователя аллергия"
                 : ""
         );
+        
+        logger.info("Full week prompt (length: {}): {}", prompt.length(), prompt);
+        return prompt;
     }
 
     private MealPlan parseAiResponse(String response) {
@@ -185,7 +201,7 @@ public class MealPlanService {
     }
 
     private String createDayPrompt(User user) {
-        return String.format("""
+        String prompt = String.format("""
             Ты — ИИ-диетолог. Составь подробный план питания на один день для пользователя:
             Имя: %s
             Возраст: %d
@@ -201,7 +217,16 @@ public class MealPlanService {
 
             Пример структуры:
             {
-                "breakfast": { ... },
+                "breakfast": {
+                    "name": "string",
+                    "mealType": "BREAKFAST",
+                    "calories": number,
+                    "proteins": number,
+                    "fats": number,
+                    "carbohydrates": number,
+                    "ingredients": ["string"],
+                    "recipe": "string"
+                },
                 "lunch": { ... },
                 "dinner": { ... },
                 "snack": { ... },
@@ -227,6 +252,9 @@ public class MealPlanService {
                 ? "ВАЖНО: СТРОГО ИЗБЕГАЙ использования любых ингредиентов, на которые у пользователя аллергия!"
                 : ""
         );
+        
+        logger.info("Full day prompt (length: {}): {}", prompt.length(), prompt);
+        return prompt;
     }
 
     private DayMealPlan parseDayAiResponse(String response, User user) {
