@@ -66,17 +66,18 @@ public class MealPlanService {
 
     private String createPrompt(User user) {
         return String.format(
-            "You are a nutrition AI assistant. Generate a personalized meal plan for 7 days (a week) in JSON format. " +
-            "Each day must include: breakfast, lunch, dinner, snack, totalCalories, and macronutrients (proteins, fats, carbs). " +
-            "All fields must be filled. Meals should not repeat within the week. Respond ONLY with a valid JSON object, no explanations.\n" +
-            "User characteristics:\n" +
-            "- Age: %d\n" +
-            "- Gender: %s\n" +
-            "- Weight: %.1f kg\n" +
-            "- Height: %.1f cm\n" +
-            "- Activity Level: %s\n" +
-            "- Goal: %s\n\n" +
-            "Required JSON structure (respond with ONLY this structure):\n" +
+            "Ты — ИИ-диетолог. Составь подробный план питания на 7 дней (неделю) в формате JSON. " +
+            "Каждый день должен включать: завтрак, обед, ужин, перекус, общие калории и макронутриенты (белки, жиры, углеводы). " +
+            "Все поля должны быть заполнены. Блюда не должны повторяться в течение недели. Верни ТОЛЬКО валидный JSON объект, без пояснений.\n" +
+            "Характеристики пользователя:\n" +
+            "- Возраст: %d\n" +
+            "- Пол: %s\n" +
+            "- Вес: %.1f кг\n" +
+            "- Рост: %.1f см\n" +
+            "- Уровень активности: %s\n" +
+            "- Цель: %s\n" +
+            "%s\n" +
+            "Требуемая структура JSON (верни ТОЛЬКО эту структуру):\n" +
             "{\n" +
             "  \"days\": [\n" +
             "    {\n" +
@@ -94,19 +95,26 @@ public class MealPlanService {
             "    }\n" +
             "  ]\n" +
             "}\n" +
-            "Rules:\n" +
-            "1. Respond with ONLY the JSON object, no other text\n" +
-            "2. All nutritional values must be realistic numbers\n" +
-            "3. Total daily calories should match user's needs based on their characteristics\n" +
-            "4. Ensure all JSON fields are present and properly formatted\n" +
-            "5. Meals should not repeat within the week\n" +
-            "6. Each meal must include ingredients and a basic recipe\n",
+            "Правила:\n" +
+            "1. Верни ТОЛЬКО JSON объект, без дополнительного текста\n" +
+            "2. Все значения калорий и макронутриентов должны быть реалистичными числами\n" +
+            "3. Общие калории за день должны соответствовать потребностям пользователя\n" +
+            "4. Убедись, что все поля JSON присутствуют и правильно отформатированы\n" +
+            "5. Блюда не должны повторяться в течение недели\n" +
+            "6. Каждое блюдо должно включать ингредиенты и базовый рецепт\n" +
+            "%s",
             user.getAge(),
             user.getGender(),
             user.getWeight(),
             user.getHeight(),
             user.getActivityLevel(),
-            user.getGoal()
+            user.getGoal(),
+            user.getAllergies() != null && !user.getAllergies().isEmpty() 
+                ? String.format("- Аллергии: %s\n", String.join(", ", user.getAllergies()))
+                : "",
+            user.getAllergies() != null && !user.getAllergies().isEmpty() 
+                ? "7. СТРОГО ИЗБЕГАЙ использования любых ингредиентов, на которые у пользователя аллергия\n"
+                : ""
         );
     }
 
@@ -177,8 +185,10 @@ public class MealPlanService {
             Рост: %.1f см
             Уровень активности: %s
             Цель: %s
+            %s
 
             ВАЖНО: Верни только JSON, без пояснений, markdown и других символов. Никаких комментариев, только JSON!
+            %s
 
             Пример структуры:
             {
@@ -200,7 +210,13 @@ public class MealPlanService {
             user.getWeight(),
             user.getHeight(),
             user.getActivityLevel(),
-            user.getGoal()
+            user.getGoal(),
+            user.getAllergies() != null && !user.getAllergies().isEmpty() 
+                ? String.format("Аллергии: %s", String.join(", ", user.getAllergies()))
+                : "",
+            user.getAllergies() != null && !user.getAllergies().isEmpty() 
+                ? "ВАЖНО: СТРОГО ИЗБЕГАЙ использования любых ингредиентов, на которые у пользователя аллергия!"
+                : ""
         );
     }
 

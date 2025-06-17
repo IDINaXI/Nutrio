@@ -69,6 +69,7 @@ public class AIService {
 
     private List<Meal> generateBreakfast(User user, Map<String, Double> macros) {
         List<Meal> breakfasts = new ArrayList<>();
+        List<String> allergies = user.getAllergies();
         
         // High protein breakfast
         Meal proteinOatmeal = new Meal();
@@ -80,7 +81,9 @@ public class AIService {
         proteinOatmeal.setCarbohydrates(macros.get("carbs") * 0.25);
         proteinOatmeal.setIngredients(Arrays.asList("Овсяные хлопья", "Протеиновый порошок", "Банан", "Миндальное молоко", "Семена чиа"));
         proteinOatmeal.setRecipe("Сварите овсянку на миндальном молоке, добавьте протеиновый порошок, украсьте бананом и семенами чиа");
-        breakfasts.add(proteinOatmeal);
+        if (!containsAllergens(proteinOatmeal.getIngredients(), allergies)) {
+            breakfasts.add(proteinOatmeal);
+        }
 
         // Balanced breakfast
         Meal avocadoToast = new Meal();
@@ -92,7 +95,9 @@ public class AIService {
         avocadoToast.setCarbohydrates(macros.get("carbs") * 0.2);
         avocadoToast.setIngredients(Arrays.asList("Цельнозерновой хлеб", "Авокадо", "Яйца", "Шпинат", "Помидоры черри"));
         avocadoToast.setRecipe("Поджарьте хлеб, разомните авокадо, добавьте пашот яйца и овощи");
-        breakfasts.add(avocadoToast);
+        if (!containsAllergens(avocadoToast.getIngredients(), allergies)) {
+            breakfasts.add(avocadoToast);
+        }
 
         // Quick breakfast
         Meal yogurtParfait = new Meal();
@@ -104,13 +109,25 @@ public class AIService {
         yogurtParfait.setCarbohydrates(macros.get("carbs") * 0.15);
         yogurtParfait.setIngredients(Arrays.asList("Греческий йогурт", "Смесь ягод", "Гранола", "Мед"));
         yogurtParfait.setRecipe("Выложите слоями йогурт, ягоды и гранолу, полейте медом");
-        breakfasts.add(yogurtParfait);
+        if (!containsAllergens(yogurtParfait.getIngredients(), allergies)) {
+            breakfasts.add(yogurtParfait);
+        }
 
         return breakfasts;
     }
 
+    private boolean containsAllergens(List<String> ingredients, List<String> allergies) {
+        if (allergies == null || allergies.isEmpty()) {
+            return false;
+        }
+        return ingredients.stream()
+            .anyMatch(ingredient -> allergies.stream()
+                .anyMatch(allergy -> ingredient.toLowerCase().contains(allergy.toLowerCase())));
+    }
+
     private List<Meal> generateLunch(User user, Map<String, Double> macros) {
         List<Meal> lunches = new ArrayList<>();
+        List<String> allergies = user.getAllergies();
         
         // Protein-rich lunch
         Meal chickenSalad = new Meal();
@@ -122,7 +139,9 @@ public class AIService {
         chickenSalad.setCarbohydrates(macros.get("carbs") * 0.2);
         chickenSalad.setIngredients(Arrays.asList("Куриная грудка", "Смесь салатов", "Киноа", "Оливковое масло", "Бальзамический уксус"));
         chickenSalad.setRecipe("Обжарьте куриную грудку, подавайте на смеси салатов с киноа, заправьте оливковым маслом и бальзамическим уксусом");
-        lunches.add(chickenSalad);
+        if (!containsAllergens(chickenSalad.getIngredients(), allergies)) {
+            lunches.add(chickenSalad);
+        }
 
         // Balanced lunch
         Meal mediterraneanBowl = new Meal();
@@ -132,69 +151,53 @@ public class AIService {
         mediterraneanBowl.setProteins(macros.get("protein") * 0.25);
         mediterraneanBowl.setFats(macros.get("fat") * 0.2);
         mediterraneanBowl.setCarbohydrates(macros.get("carbs") * 0.25);
-        mediterraneanBowl.setIngredients(Arrays.asList("Лосось", "Бурый рис", "Запеченные овощи", "Хумус", "Сыр фета"));
-        mediterraneanBowl.setRecipe("Подайте запеченного лосося с бурым рисом, запеченными овощами, хумусом и сыром фета");
-        lunches.add(mediterraneanBowl);
-
-        // Vegetarian lunch
-        Meal lentilBowl = new Meal();
-        lentilBowl.setName("Будда-боул с чечевицей");
-        lentilBowl.setMealType(Meal.MealType.LUNCH);
-        lentilBowl.setCalories(500);
-        lentilBowl.setProteins(macros.get("protein") * 0.2);
-        lentilBowl.setFats(macros.get("fat") * 0.15);
-        lentilBowl.setCarbohydrates(macros.get("carbs") * 0.3);
-        lentilBowl.setIngredients(Arrays.asList("Чечевица", "Батат", "Кейл", "Тахин", "Тыквенные семечки"));
-        lentilBowl.setRecipe("Смешайте отварную чечевицу с запеченным бататом и кейлом, полейте соусом тахини и посыпьте тыквенными семечками");
-        lunches.add(lentilBowl);
+        mediterraneanBowl.setIngredients(Arrays.asList("Киноа", "Нут", "Огурцы", "Помидоры", "Оливки", "Фета", "Оливковое масло"));
+        mediterraneanBowl.setRecipe("Смешайте все ингредиенты, заправьте оливковым маслом");
+        if (!containsAllergens(mediterraneanBowl.getIngredients(), allergies)) {
+            lunches.add(mediterraneanBowl);
+        }
 
         return lunches;
     }
 
     private List<Meal> generateDinner(User user, Map<String, Double> macros) {
         List<Meal> dinners = new ArrayList<>();
+        List<String> allergies = user.getAllergies();
         
-        // High protein dinner
-        Meal steakDinner = new Meal();
-        steakDinner.setName("Стейк с овощами");
-        steakDinner.setMealType(Meal.MealType.DINNER);
-        steakDinner.setCalories(650);
-        steakDinner.setProteins(macros.get("protein") * 0.35);
-        steakDinner.setFats(macros.get("fat") * 0.25);
-        steakDinner.setCarbohydrates(macros.get("carbs") * 0.15);
-        steakDinner.setIngredients(Arrays.asList("Стейк", "Брокколи", "Батат", "Чеснок", "Травы"));
-        steakDinner.setRecipe("Обжарьте стейк до желаемой прожарки, подавайте с запеченными овощами и бататом");
-        dinners.add(steakDinner);
+        // Protein-rich dinner
+        Meal salmonDinner = new Meal();
+        salmonDinner.setName("Лосось с овощами");
+        salmonDinner.setMealType(Meal.MealType.DINNER);
+        salmonDinner.setCalories(650);
+        salmonDinner.setProteins(macros.get("protein") * 0.35);
+        salmonDinner.setFats(macros.get("fat") * 0.25);
+        salmonDinner.setCarbohydrates(macros.get("carbs") * 0.15);
+        salmonDinner.setIngredients(Arrays.asList("Лосось", "Брокколи", "Спаржа", "Лимон", "Оливковое масло"));
+        salmonDinner.setRecipe("Запеките лосось с овощами, сбрызните лимонным соком и оливковым маслом");
+        if (!containsAllergens(salmonDinner.getIngredients(), allergies)) {
+            dinners.add(salmonDinner);
+        }
 
         // Balanced dinner
-        Meal salmonDinner = new Meal();
-        salmonDinner.setName("Запеченный лосось с киноа");
-        salmonDinner.setMealType(Meal.MealType.DINNER);
-        salmonDinner.setCalories(600);
-        salmonDinner.setProteins(macros.get("protein") * 0.3);
-        salmonDinner.setFats(macros.get("fat") * 0.2);
-        salmonDinner.setCarbohydrates(macros.get("carbs") * 0.2);
-        salmonDinner.setIngredients(Arrays.asList("Лосось", "Киноа", "Спаржа", "Лимон", "Укроп"));
-        salmonDinner.setRecipe("Запеките лосося с лимоном и укропом, подавайте с киноа и запеченной спаржей");
-        dinners.add(salmonDinner);
-
-        // Light dinner
         Meal turkeyStirFry = new Meal();
         turkeyStirFry.setName("Стир-фрай с индейкой");
         turkeyStirFry.setMealType(Meal.MealType.DINNER);
         turkeyStirFry.setCalories(550);
-        turkeyStirFry.setProteins(macros.get("protein") * 0.25);
+        turkeyStirFry.setProteins(macros.get("protein") * 0.3);
         turkeyStirFry.setFats(macros.get("fat") * 0.15);
         turkeyStirFry.setCarbohydrates(macros.get("carbs") * 0.25);
         turkeyStirFry.setIngredients(Arrays.asList("Фарш из индейки", "Бурый рис", "Смесь овощей", "Соевый соус", "Имбирь"));
         turkeyStirFry.setRecipe("Обжарьте фарш с овощами, подавайте с бурым рисом и соусом из соевого соуса и имбиря");
-        dinners.add(turkeyStirFry);
+        if (!containsAllergens(turkeyStirFry.getIngredients(), allergies)) {
+            dinners.add(turkeyStirFry);
+        }
 
         return dinners;
     }
 
     private List<Meal> generateSnacks(User user, Map<String, Double> macros) {
         List<Meal> snacks = new ArrayList<>();
+        List<String> allergies = user.getAllergies();
         
         // Protein snack
         Meal proteinSmoothie = new Meal();
@@ -206,7 +209,9 @@ public class AIService {
         proteinSmoothie.setCarbohydrates(macros.get("carbs") * 0.1);
         proteinSmoothie.setIngredients(Arrays.asList("Протеиновый порошок", "Миндальное молоко", "Замороженные ягоды", "Шпинат"));
         proteinSmoothie.setRecipe("Смешайте все ингредиенты в блендере до однородной массы");
-        snacks.add(proteinSmoothie);
+        if (!containsAllergens(proteinSmoothie.getIngredients(), allergies)) {
+            snacks.add(proteinSmoothie);
+        }
 
         // Balanced snack
         Meal appleSnack = new Meal();
@@ -217,20 +222,10 @@ public class AIService {
         appleSnack.setFats(macros.get("fat") * 0.15);
         appleSnack.setCarbohydrates(macros.get("carbs") * 0.15);
         appleSnack.setIngredients(Arrays.asList("Яблоко", "Миндальная паста", "Корица"));
-        appleSnack.setRecipe("Нарежьте яблоко и подавайте с миндальной пастой, посыпьте корицей");
-        snacks.add(appleSnack);
-
-        // Quick snack
-        Meal yogurtSnack = new Meal();
-        yogurtSnack.setName("Греческий йогурт с орехами");
-        yogurtSnack.setMealType(Meal.MealType.SNACK);
-        yogurtSnack.setCalories(200);
-        yogurtSnack.setProteins(macros.get("protein") * 0.2);
-        yogurtSnack.setFats(macros.get("fat") * 0.1);
-        yogurtSnack.setCarbohydrates(macros.get("carbs") * 0.05);
-        yogurtSnack.setIngredients(Arrays.asList("Греческий йогурт", "Смесь орехов", "Мед"));
-        yogurtSnack.setRecipe("Подайте йогурт с орехами и полейте медом");
-        snacks.add(yogurtSnack);
+        appleSnack.setRecipe("Нарежьте яблоко, намажьте миндальной пастой и посыпьте корицей");
+        if (!containsAllergens(appleSnack.getIngredients(), allergies)) {
+            snacks.add(appleSnack);
+        }
 
         return snacks;
     }
