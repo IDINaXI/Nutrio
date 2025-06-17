@@ -1,6 +1,7 @@
 package com.nutrio.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.core.JsonParser;
 import com.nutrio.client.GeminiClient;
 import com.nutrio.model.MealPlan;
 import com.nutrio.model.Meal;
@@ -15,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.apache.commons.lang3.StringEscapeUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -22,6 +24,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
+import java.nio.charset.StandardCharsets;
 
 @Slf4j
 @Service
@@ -47,6 +50,8 @@ public class MealPlanService {
         this.dayMealPlanRepository = dayMealPlanRepository;
         this.aiService = aiService;
         this.objectMapper = new ObjectMapper();
+        this.objectMapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_CONTROL_CHARS, true);
+        this.objectMapper.getFactory().setCharacterEscapes(null);
     }
 
     public MealPlan generateMealPlan(User user) {
@@ -137,6 +142,10 @@ public class MealPlanService {
                 throw new RuntimeException("Failed to extract JSON from AI response");
             }
             String json = matcher.group();
+            // Удаляем markdown, если есть
+            json = json.replaceAll("```json", "").replaceAll("```", "").trim();
+            // Декодируем Unicode escape sequences
+            json = StringEscapeUtils.unescapeJava(json);
             Map<String, Object> data = objectMapper.readValue(json, Map.class);
             MealPlan mealPlan = new MealPlan();
             List<Map<String, Object>> days = (List<Map<String, Object>>) data.get("days");
@@ -262,6 +271,8 @@ public class MealPlanService {
             logger.info("AI raw response: {}", response);
             // Убираем markdown, если есть
             response = response.replaceAll("```json", "").replaceAll("```", "").trim();
+            // Декодируем Unicode escape sequences
+            response = StringEscapeUtils.unescapeJava(response);
             Pattern pattern = Pattern.compile("\\{.*\\}", Pattern.DOTALL);
             Matcher matcher = pattern.matcher(response);
             if (!matcher.find()) {
