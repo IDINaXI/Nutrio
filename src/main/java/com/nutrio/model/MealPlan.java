@@ -37,6 +37,14 @@ public class MealPlan {
     @Schema(description = "Creation date and time")
     private LocalDateTime createdAt;
 
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
@@ -381,13 +389,5 @@ public class MealPlan {
     @Override
     public int hashCode() {
         return Objects.hash(id);
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
     }
 }

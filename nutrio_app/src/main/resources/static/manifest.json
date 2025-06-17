@@ -1,11 +1,11 @@
 {
-    "name": "nutrio_app",
-    "short_name": "nutrio_app",
+    "name": "Nutrio",
+    "short_name": "Nutrio",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "background_color": "#4CAF50",
+    "theme_color": "#4CAF50",
+    "description": "Приложение для отслеживания питания и здоровья",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

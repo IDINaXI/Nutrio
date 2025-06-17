@@ -10,7 +10,7 @@ class ApiService {
   factory ApiService() => _instance;
   ApiService._internal();
 
-  static const String baseUrl = 'https://nutrio.onrender.com/api';
+  static const String baseUrl = 'http://192.168.100.112:8080/api';
   String? _token;
 
   void setToken(String token) {

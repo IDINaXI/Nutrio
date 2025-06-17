@@ -43,7 +43,7 @@ class _ReportScreenState extends State<ReportScreen> {
     });
     try {
       final token = AuthService().token;
-      final url = Uri.parse('http://192.168.100.108:8080/api/reports/user/${widget.userId}?from=${DateFormat('yyyy-MM-dd').format(_from)}&to=${DateFormat('yyyy-MM-dd').format(_to)}');
+      final url = Uri.parse('http://192.168.100.112:8080/api/reports/user/${widget.userId}?from=${DateFormat('yyyy-MM-dd').format(_from)}&to=${DateFormat('yyyy-MM-dd').format(_to)}');
       final response = await http.get(url, headers: {
         'Authorization': 'Bearer $token',
       });

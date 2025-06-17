@@ -4,7 +4,7 @@ import '../models/weight_entry.dart';
 import 'auth_service.dart';
 
 class WeightService {
-  static const String baseUrl = 'http://192.168.100.108:8080/api/weight';
+  static const String baseUrl = 'http://192.168.100.112:8080/api/weight';
 
   String? _getToken() {
     return AuthService().token;

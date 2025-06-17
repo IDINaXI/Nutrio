@@ -11,7 +11,7 @@ echo "Starting Spring Boot application..."
 
 # Запуск Nginx
 echo "Starting Nginx..."
-nginx -c $(pwd)/nginx.conf
+nginx -c "$(pwd)/nginx.conf"
 
 echo "Application is running!"
 echo "Access it at: http://localhost:80" 

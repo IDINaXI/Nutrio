@@ -33,7 +33,10 @@ import java.util.Comparator;
 @RequestMapping("/api/meal-plans")
 @Tag(name = "Meal Plans", description = "API for managing meal plans")
 @SecurityRequirement(name = "bearerAuth")
-@CrossOrigin(origins = {"http://localhost:3000", "http://127.0.0.1:3000"})
+@CrossOrigin(origins = {
+    "http://192.168.100.112:3000",
+    "http://127.0.0.1:3000"
+})
 public class MealPlanController {
     private static final Logger logger = LoggerFactory.getLogger(MealPlanController.class);
 

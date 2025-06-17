@@ -16,7 +16,10 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/ai")
 @CrossOrigin(
-    originPatterns = {"http://localhost:[*]", "http://127.0.0.1:[*]"},
+    originPatterns = {
+        "http://192.168.100.112:[*]",
+        "http://127.0.0.1:[*]"
+    },
     allowedHeaders = {"Authorization", "Content-Type", "X-Requested-With", "Accept", "Origin"},
     allowCredentials = "true"
 )
