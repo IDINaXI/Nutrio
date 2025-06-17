@@ -1,4 +1,15 @@
 FROM eclipse-temurin:17-jdk-alpine
-VOLUME /tmp
-COPY target/*.jar app.jar
-ENTRYPOINT ["java","-jar","/app.jar"] 
+
+WORKDIR /app
+
+COPY .mvn/ .mvn
+COPY mvnw pom.xml ./
+RUN ./mvnw dependency:go-offline
+
+COPY src ./src
+
+RUN ./mvnw package -DskipTests
+
+EXPOSE 8080
+
+ENTRYPOINT ["java", "-jar", "target/Nutrio-0.0.1-SNAPSHOT.jar"] 
