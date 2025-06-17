@@ -145,9 +145,17 @@ public class MealPlanService {
             String json = matcher.group();
             // Удаляем markdown, если есть
             json = json.replaceAll("```json", "").replaceAll("```", "").trim();
+            
             // Декодируем Unicode escape sequences и обрабатываем русские символы
             json = StringEscapeUtils.unescapeJava(json);
-            json = new String(json.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
+            
+            // Конвертируем в байты и обратно для правильной обработки кодировки
+            byte[] bytes = json.getBytes(StandardCharsets.ISO_8859_1);
+            json = new String(bytes, StandardCharsets.UTF_8);
+            
+            // Дополнительная обработка для корректного отображения русских символов
+            json = json.replaceAll("\\\\u([0-9a-fA-F]{4})", "\\\\u$1");
+            json = StringEscapeUtils.unescapeJava(json);
             
             logger.info("Processed JSON before parsing: {}", json);
             
@@ -273,17 +281,28 @@ public class MealPlanService {
 
     private DayMealPlan parseDayAiResponse(String response, User user) {
         try {
-            logger.info("AI raw response: {}", response);
-            // Убираем markdown, если есть
-            response = response.replaceAll("```json", "").replaceAll("```", "").trim();
-            // Декодируем Unicode escape sequences
-            response = StringEscapeUtils.unescapeJava(response);
             Pattern pattern = Pattern.compile("\\{.*\\}", Pattern.DOTALL);
             Matcher matcher = pattern.matcher(response);
             if (!matcher.find()) {
                 throw new RuntimeException("Failed to extract JSON from AI response");
             }
             String json = matcher.group();
+            // Удаляем markdown, если есть
+            json = json.replaceAll("```json", "").replaceAll("```", "").trim();
+            
+            // Декодируем Unicode escape sequences и обрабатываем русские символы
+            json = StringEscapeUtils.unescapeJava(json);
+            
+            // Конвертируем в байты и обратно для правильной обработки кодировки
+            byte[] bytes = json.getBytes(StandardCharsets.ISO_8859_1);
+            json = new String(bytes, StandardCharsets.UTF_8);
+            
+            // Дополнительная обработка для корректного отображения русских символов
+            json = json.replaceAll("\\\\u([0-9a-fA-F]{4})", "\\\\u$1");
+            json = StringEscapeUtils.unescapeJava(json);
+            
+            logger.info("Processed JSON before parsing: {}", json);
+            
             Map<String, Object> data = objectMapper.readValue(json, Map.class);
             DayMealPlan plan = new DayMealPlan();
 
