@@ -70,18 +70,18 @@ public class MealPlanService {
 
     private String createPrompt(User user) {
         String prompt = String.format("""
-            Ты — ИИ-диетолог. Составь подробный план питания на 7 дней (неделю) в формате JSON.
+            You are an AI nutritionist. Create a detailed meal plan for 7 days (week) in JSON format.
             %s
 
-            Характеристики пользователя:
-            - Возраст: %d
-            - Пол: %s
-            - Вес: %.1f кг
-            - Рост: %.1f см
-            - Уровень активности: %s
-            - Цель: %s
+            User characteristics:
+            - Age: %d
+            - Gender: %s
+            - Weight: %.1f kg
+            - Height: %.1f cm
+            - Activity Level: %s
+            - Goal: %s
 
-            Требуемая структура JSON (верни ТОЛЬКО эту структуру):
+            Required JSON structure (return ONLY this structure):
             {
                 "days": [
                     {
@@ -109,19 +109,19 @@ public class MealPlanService {
                 ]
             }
 
-            Правила:
-            1. Верни ТОЛЬКО JSON объект, без дополнительного текста
-            2. Все значения калорий и макронутриентов должны быть реалистичными числами
-            3. Общие калории за день должны соответствовать потребностям пользователя
-            4. Убедись, что все поля JSON присутствуют и правильно отформатированы
-            5. Блюда не должны повторяться в течение недели
-            6. Каждое блюдо должно включать ингредиенты и базовый рецепт
+            Rules:
+            1. Return ONLY the JSON object, without additional text
+            2. All calorie and macronutrient values must be realistic numbers
+            3. Total daily calories should match user's needs
+            4. Ensure all JSON fields are present and properly formatted
+            5. Meals should not repeat during the week
+            6. Each meal must include ingredients and basic recipe
             """,
             user.getAllergies() != null && !user.getAllergies().isEmpty() 
                 ? String.format("""
-                    ВНИМАНИЕ! У пользователя есть аллергии: %s
-                    СТРОГО ЗАПРЕЩЕНО включать в план питания любые блюда, содержащие эти аллергены!
-                    Каждое блюдо должно быть безопасным для пользователя.
+                    WARNING! User has allergies: %s
+                    STRICTLY FORBIDDEN to include any meals containing these allergens!
+                    Each meal must be safe for the user.
                     """, String.join(", ", user.getAllergies()))
                 : "",
             user.getAge(),
@@ -200,21 +200,21 @@ public class MealPlanService {
 
     private String createDayPrompt(User user) {
         String prompt = String.format("""
-            Ты — ИИ-диетолог. Составь подробный план питания на один день для пользователя.
+            You are an AI nutritionist. Create a detailed meal plan for one day for the user.
             %s
 
-            Характеристики пользователя:
-            Имя: %s
-            Возраст: %d
-            Пол: %s
-            Вес: %.1f кг
-            Рост: %.1f см
-            Уровень активности: %s
-            Цель: %s
+            User characteristics:
+            Name: %s
+            Age: %d
+            Gender: %s
+            Weight: %.1f kg
+            Height: %.1f cm
+            Activity Level: %s
+            Goal: %s
 
-            ВАЖНО: Верни только JSON, без пояснений, markdown и других символов. Никаких комментариев, только JSON!
+            IMPORTANT: Return ONLY JSON, without explanations, markdown, or other symbols. No comments, just JSON!
 
-            Пример структуры:
+            Example structure:
             {
                 "breakfast": {
                     "name": "string",
@@ -239,9 +239,9 @@ public class MealPlanService {
             """,
             user.getAllergies() != null && !user.getAllergies().isEmpty() 
                 ? String.format("""
-                    ВНИМАНИЕ! У пользователя есть аллергии: %s
-                    СТРОГО ЗАПРЕЩЕНО включать в план питания любые блюда, содержащие эти аллергены!
-                    Каждое блюдо должно быть безопасным для пользователя.
+                    WARNING! User has allergies: %s
+                    STRICTLY FORBIDDEN to include any meals containing these allergens!
+                    Each meal must be safe for the user.
                     """, String.join(", ", user.getAllergies()))
                 : "",
             user.getName(),
