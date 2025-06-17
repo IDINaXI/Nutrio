@@ -73,24 +73,24 @@ public class MealPlanService {
     private String createPrompt(User user) {
         String allergiesInfo = "";
         if (user.getAllergies() != null && !user.getAllergies().isEmpty()) {
-            allergiesInfo = String.format("- Аллергии: %s\nВАЖНО: СТРОГО ИЗБЕГАЙ использования любых ингредиентов, на которые у пользователя аллергия!\n", 
+            allergiesInfo = String.format("- Allergii: %s\nVAGNO: STROGO IZBEGAI ispolzovaniya lyubih ingredientov, na kotorie u polzovatelya allergiya!\n", 
                 String.join(", ", user.getAllergies()));
             logger.info("Adding allergies to prompt: {}", allergiesInfo);
         }
 
         return String.format(
-            "Ты — ИИ-диетолог. Составь подробный план питания на 7 дней (неделю) в формате JSON. " +
-            "Каждый день должен включать: завтрак, обед, ужин, перекус, общие калории и макронутриенты (белки, жиры, углеводы). " +
-            "Все поля должны быть заполнены. Блюда не должны повторяться в течение недели. Верни ТОЛЬКО валидный JSON объект, без пояснений.\n" +
-            "Характеристики пользователя:\n" +
-            "- Возраст: %d\n" +
-            "- Пол: %s\n" +
-            "- Вес: %.1f кг\n" +
-            "- Рост: %.1f см\n" +
-            "- Уровень активности: %s\n" +
-            "- Цель: %s\n" +
+            "Ti - II-dietolog. Sostav podrobniy plan pitaniya na 7 dney (nedelyu) v formate JSON. " +
+            "Kazhdyi den dolzhen vklyuchat: zavtrak, obed, uzhin, perekus, obshie kalorii i makronutrienty (belki, zhiri, uglevody). " +
+            "Vse polya dolzhny byt zapolneny. Blyuda ne dolzhny povtoryatsya v techenie nedeli. Verni TOLKO validnyi JSON object, bez poyasnenii.\n" +
+            "Harakteristiki polzovatelya:\n" +
+            "- Vozrast: %d\n" +
+            "- Pol: %s\n" +
+            "- Ves: %.1f kg\n" +
+            "- Rost: %.1f cm\n" +
+            "- Uroven aktivnosti: %s\n" +
+            "- Cel: %s\n" +
             "%s\n" +
-            "Требуемая структура JSON (верни ТОЛЬКО эту структуру):\n" +
+            "Trebuemaya struktura JSON (verni TOLKO etu strukturu):\n" +
             "{\n" +
             "  \"days\": [\n" +
             "    {\n" +
@@ -108,13 +108,13 @@ public class MealPlanService {
             "    }\n" +
             "  ]\n" +
             "}\n" +
-            "Правила:\n" +
-            "1. Верни ТОЛЬКО JSON объект, без дополнительного текста\n" +
-            "2. Все значения калорий и макронутриентов должны быть реалистичными числами\n" +
-            "3. Общие калории за день должны соответствовать потребностям пользователя\n" +
-            "4. Убедись, что все поля JSON присутствуют и правильно отформатированы\n" +
-            "5. Блюда не должны повторяться в течение недели\n" +
-            "6. Каждое блюдо должно включать ингредиенты и базовый рецепт\n" +
+            "Pravila:\n" +
+            "1. Verni TOLKO JSON object, bez dopolnitelnogo teksta\n" +
+            "2. Vse znacheniya kalorii i makronutrientov dolzhny byt realisticnymi chislami\n" +
+            "3. Obshie kalorii za den dolzhny sootvetstvovat potrebnostyam polzovatelya\n" +
+            "4. Ubedis, chto vse polya JSON prisutstvuyut i pravilno otformatirovany\n" +
+            "5. Blyuda ne dolzhny povtoryatsya v techenie nedeli\n" +
+            "6. Kazhdoe blyudo dolzhno vklyuchat ingredienty i bazovyi recept\n" +
             "%s",
             user.getAge(),
             user.getGender(),
@@ -124,7 +124,7 @@ public class MealPlanService {
             user.getGoal(),
             allergiesInfo,
             user.getAllergies() != null && !user.getAllergies().isEmpty() 
-                ? "7. СТРОГО ИЗБЕГАЙ использования любых ингредиентов, на которые у пользователя аллергия!\n"
+                ? "7. STROGO IZBEGAI ispolzovaniya lyubih ingredientov, na kotorie u polzovatelya allergiya!\n"
                 : ""
         );
     }
@@ -210,26 +210,26 @@ public class MealPlanService {
     private String createDayPrompt(User user) {
         String allergiesInfo = "";
         if (user.getAllergies() != null && !user.getAllergies().isEmpty()) {
-            allergiesInfo = String.format("Аллергии: %s\nВАЖНО: СТРОГО ИЗБЕГАЙ использования любых ингредиентов, на которые у пользователя аллергия!\n", 
+            allergiesInfo = String.format("Allergii: %s\nVAGNO: STROGO IZBEGAI ispolzovaniya lyubih ingredientov, na kotorie u polzovatelya allergiya!\n", 
                 String.join(", ", user.getAllergies()));
             logger.info("Adding allergies to day prompt: {}", allergiesInfo);
         }
 
         return String.format("""
-            Ты — ИИ-диетолог. Составь подробный план питания на один день для пользователя:
-            Имя: %s
-            Возраст: %d
-            Пол: %s
-            Вес: %.1f кг
-            Рост: %.1f см
-            Уровень активности: %s
-            Цель: %s
+            Ti - II-dietolog. Sostav podrobniy plan pitaniya na odin den dlya polzovatelya:
+            Imya: %s
+            Vozrast: %d
+            Pol: %s
+            Ves: %.1f kg
+            Rost: %.1f cm
+            Uroven aktivnosti: %s
+            Cel: %s
             %s
 
-            ВАЖНО: Верни только JSON, без пояснений, markdown и других символов. Никаких комментариев, только JSON!
+            VAGNO: Verni tolko JSON, bez poyasnenii, markdown i drugih simvolov. Nikakih kommentariev, tolko JSON!
             %s
 
-            Пример структуры:
+            Primer struktury:
             {
                 "breakfast": { ... },
                 "lunch": { ... },
@@ -252,7 +252,7 @@ public class MealPlanService {
             user.getGoal(),
             allergiesInfo,
             user.getAllergies() != null && !user.getAllergies().isEmpty() 
-                ? "ВАЖНО: СТРОГО ИЗБЕГАЙ использования любых ингредиентов, на которые у пользователя аллергия!"
+                ? "VAGNO: STROGO IZBEGAI ispolzovaniya lyubih ingredientov, na kotorie u polzovatelya allergiya!"
                 : ""
         );
     }
