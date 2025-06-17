@@ -71,8 +71,7 @@ public class MealPlanService {
     private String createPrompt(User user) {
         String prompt = String.format("""
             Ты — ИИ-диетолог. Составь подробный план питания на 7 дней (неделю) в формате JSON.
-            Каждый день должен включать: завтрак, обед, ужин, перекус, общие калории и макронутриенты (белки, жиры, углеводы).
-            Все поля должны быть заполнены. Блюда не должны повторяться в течение недели. Верни ТОЛЬКО валидный JSON объект, без пояснений.
+            %s
 
             Характеристики пользователя:
             - Возраст: %d
@@ -81,7 +80,6 @@ public class MealPlanService {
             - Рост: %.1f см
             - Уровень активности: %s
             - Цель: %s
-            %s
 
             Требуемая структура JSON (верни ТОЛЬКО эту структуру):
             {
@@ -118,20 +116,20 @@ public class MealPlanService {
             4. Убедись, что все поля JSON присутствуют и правильно отформатированы
             5. Блюда не должны повторяться в течение недели
             6. Каждое блюдо должно включать ингредиенты и базовый рецепт
-            %s
             """,
+            user.getAllergies() != null && !user.getAllergies().isEmpty() 
+                ? String.format("""
+                    ВНИМАНИЕ! У пользователя есть аллергии: %s
+                    СТРОГО ЗАПРЕЩЕНО включать в план питания любые блюда, содержащие эти аллергены!
+                    Каждое блюдо должно быть безопасным для пользователя.
+                    """, String.join(", ", user.getAllergies()))
+                : "",
             user.getAge(),
             user.getGender(),
             user.getWeight(),
             user.getHeight(),
             user.getActivityLevel(),
-            user.getGoal(),
-            user.getAllergies() != null && !user.getAllergies().isEmpty() 
-                ? String.format("- Аллергии: %s", String.join(", ", user.getAllergies()))
-                : "",
-            user.getAllergies() != null && !user.getAllergies().isEmpty() 
-                ? "7. СТРОГО ИЗБЕГАЙ использования любых ингредиентов, на которые у пользователя аллергия"
-                : ""
+            user.getGoal()
         );
         
         logger.info("Full week prompt (length: {}): {}", prompt.length(), prompt);
@@ -202,7 +200,10 @@ public class MealPlanService {
 
     private String createDayPrompt(User user) {
         String prompt = String.format("""
-            Ты — ИИ-диетолог. Составь подробный план питания на один день для пользователя:
+            Ты — ИИ-диетолог. Составь подробный план питания на один день для пользователя.
+            %s
+
+            Характеристики пользователя:
             Имя: %s
             Возраст: %d
             Пол: %s
@@ -210,10 +211,8 @@ public class MealPlanService {
             Рост: %.1f см
             Уровень активности: %s
             Цель: %s
-            %s
 
             ВАЖНО: Верни только JSON, без пояснений, markdown и других символов. Никаких комментариев, только JSON!
-            %s
 
             Пример структуры:
             {
@@ -238,19 +237,20 @@ public class MealPlanService {
                 }
             }
             """,
+            user.getAllergies() != null && !user.getAllergies().isEmpty() 
+                ? String.format("""
+                    ВНИМАНИЕ! У пользователя есть аллергии: %s
+                    СТРОГО ЗАПРЕЩЕНО включать в план питания любые блюда, содержащие эти аллергены!
+                    Каждое блюдо должно быть безопасным для пользователя.
+                    """, String.join(", ", user.getAllergies()))
+                : "",
             user.getName(),
             user.getAge(),
             user.getGender(),
             user.getWeight(),
             user.getHeight(),
             user.getActivityLevel(),
-            user.getGoal(),
-            user.getAllergies() != null && !user.getAllergies().isEmpty() 
-                ? String.format("Аллергии: %s", String.join(", ", user.getAllergies()))
-                : "",
-            user.getAllergies() != null && !user.getAllergies().isEmpty() 
-                ? "ВАЖНО: СТРОГО ИЗБЕГАЙ использования любых ингредиентов, на которые у пользователя аллергия!"
-                : ""
+            user.getGoal()
         );
         
         logger.info("Full day prompt (length: {}): {}", prompt.length(), prompt);
