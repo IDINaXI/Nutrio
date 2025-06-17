@@ -55,7 +55,8 @@ public class SecurityConfig {
         configuration.setAllowedOriginPatterns(Arrays.asList(
             "http://192.168.100.112:[*]",
             "http://localhost:[*]",
-            "http://127.0.0.1:[*]"
+            "http://127.0.0.1:[*]",
+            "https://nutrio-production.up.railway.app"
         ));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
