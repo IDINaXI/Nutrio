@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:intl/intl.dart';
 import '../models/weight_entry.dart';
 import '../services/weight_service.dart';
 
@@ -69,6 +68,7 @@ class _WeightTrackingScreenState extends State<WeightTrackingScreen> {
       initialDate: _selectedDate,
       firstDate: DateTime(2000),
       lastDate: DateTime.now(),
+      locale: const Locale('ru', 'RU'),
     );
     if (picked != null && picked != _selectedDate) {
       setState(() {
@@ -119,7 +119,7 @@ class _WeightTrackingScreenState extends State<WeightTrackingScreen> {
                             ListTile(
                               title: const Text('Дата'),
                               subtitle: Text(
-                                DateFormat('dd.MM.yyyy').format(_selectedDate),
+                                '${_selectedDate.day}/${_selectedDate.month}/${_selectedDate.year}',
                               ),
                               trailing: const Icon(Icons.calendar_today),
                               onTap: () => _selectDate(context),

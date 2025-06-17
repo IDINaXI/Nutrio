@@ -98,8 +98,8 @@ class MyApp extends StatelessWidget {
       ],
       supportedLocales: const [
         Locale('ru', 'RU'),
+        Locale('en', 'US'),
       ],
-      locale: const Locale('ru', 'RU'),
     );
   }
 }

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:intl/intl.dart';
 import '../models/body_measurement.dart';
 import '../services/body_measurement_service.dart';
 
@@ -84,6 +83,7 @@ class _BodyMeasurementScreenState extends State<BodyMeasurementScreen> {
       initialDate: _selectedDate,
       firstDate: DateTime(2000),
       lastDate: DateTime.now(),
+      locale: const Locale('ru', 'RU'),
     );
     if (picked != null && picked != _selectedDate) {
       setState(() {
@@ -206,7 +206,7 @@ class _BodyMeasurementScreenState extends State<BodyMeasurementScreen> {
                             const SizedBox(height: 12),
                             ListTile(
                               title: const Text('Дата'),
-                              subtitle: Text(DateFormat('dd.MM.yyyy').format(_selectedDate)),
+                              subtitle: Text('${_selectedDate.day}/${_selectedDate.month}/${_selectedDate.year}'),
                               trailing: const Icon(Icons.calendar_today),
                               onTap: () => _selectDate(context),
                             ),

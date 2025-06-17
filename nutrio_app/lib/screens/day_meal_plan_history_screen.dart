@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import '../models/day_meal_plan.dart';
 import '../services/api_service.dart';
 
@@ -41,7 +40,7 @@ class _DayMealPlanHistoryScreenState extends State<DayMealPlanHistoryScreen> {
             itemBuilder: (context, i) {
               final plan = plans[i];
               return ListTile(
-                title: Text('План на ${DateFormat('dd.MM.yyyy').format(DateTime.parse(plan.date))}'),
+                title: Text('План на ${plan.date}'),
                 subtitle: Text('Калорий: ${plan.totalCalories}'),
                 onTap: () {
                   // Можно сделать переход на подробный просмотр плана

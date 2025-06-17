@@ -24,6 +24,7 @@ class _ReportScreenState extends State<ReportScreen> {
       initialDate: isFrom ? _from : _to,
       firstDate: DateTime(2020),
       lastDate: DateTime.now(),
+      locale: const Locale('ru', 'RU'),
     );
     if (picked != null) {
       setState(() {

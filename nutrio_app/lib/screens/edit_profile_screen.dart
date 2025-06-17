@@ -210,8 +210,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           TextFormField(
                             controller: _allergiesController,
                             decoration: const InputDecoration(
-                              labelText: 'Аллергии (через запятую)',
-                              hintText: 'например, орехи, молоко, яйца',
+                              labelText: 'Аллергии и продукты, которые не нравятся',
+                              hintText: 'Например: орехи, молоко, яйца, рыба',
                               prefixIcon: Icon(Icons.warning_amber_outlined),
                             ),
                           ),
