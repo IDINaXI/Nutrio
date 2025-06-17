@@ -4,7 +4,7 @@ buildCommand = "mvn clean package -DskipTests"
 
 [deploy]
 startCommand = "java -jar target/Nutrio-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod"
-healthcheckPath = "/"
+healthcheckPath = "/health"
 healthcheckTimeout = 100
 restartPolicyType = "always"
 restartPolicyMaxRetries = 10 
