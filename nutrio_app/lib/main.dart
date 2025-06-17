@@ -8,7 +8,6 @@ import 'screens/splash_screen.dart';
 import 'screens/day_meal_plan_screen.dart';
 import 'services/auth_service.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -91,15 +90,6 @@ class MyApp extends StatelessWidget {
         },
         '/day-meal-plan': (context) => DayMealPlanScreen(),
       },
-      localizationsDelegates: const [
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      supportedLocales: const [
-        Locale('ru', 'RU'),
-        Locale('en', 'US'),
-      ],
     );
   }
 }

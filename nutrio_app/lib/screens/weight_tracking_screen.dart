@@ -68,7 +68,6 @@ class _WeightTrackingScreenState extends State<WeightTrackingScreen> {
       initialDate: _selectedDate,
       firstDate: DateTime(2000),
       lastDate: DateTime.now(),
-      locale: const Locale('ru', 'RU'),
     );
     if (picked != null && picked != _selectedDate) {
       setState(() {
