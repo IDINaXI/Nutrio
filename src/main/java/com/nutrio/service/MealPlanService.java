@@ -51,6 +51,7 @@ public class MealPlanService {
         this.aiService = aiService;
         this.objectMapper = new ObjectMapper();
         this.objectMapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_CONTROL_CHARS, true);
+        this.objectMapper.configure(JsonParser.Feature.ALLOW_BACKSLASH_ESCAPING_ANY_CHARACTER, true);
         this.objectMapper.getFactory().setCharacterEscapes(null);
     }
 
@@ -144,8 +145,12 @@ public class MealPlanService {
             String json = matcher.group();
             // Удаляем markdown, если есть
             json = json.replaceAll("```json", "").replaceAll("```", "").trim();
-            // Декодируем Unicode escape sequences
+            // Декодируем Unicode escape sequences и обрабатываем русские символы
             json = StringEscapeUtils.unescapeJava(json);
+            json = new String(json.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
+            
+            logger.info("Processed JSON before parsing: {}", json);
+            
             Map<String, Object> data = objectMapper.readValue(json, Map.class);
             MealPlan mealPlan = new MealPlan();
             List<Map<String, Object>> days = (List<Map<String, Object>>) data.get("days");
