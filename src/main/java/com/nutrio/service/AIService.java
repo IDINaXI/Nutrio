@@ -460,6 +460,7 @@ public class AIService {
             - Рост: %.1f см
             - Уровень активности: %s
             - Цель: %s
+            %s
 
             ВАЖНО: Верни ТОЛЬКО валидный JSON, без пояснений, markdown, комментариев и других символов. Никаких пояснений, только JSON!
 
@@ -526,7 +527,14 @@ public class AIService {
             user.getWeight(),
             user.getHeight(),
             user.getActivityLevel(),
-            user.getGoal()
+            user.getGoal(),
+            user.getAllergies() != null && !user.getAllergies().isEmpty() 
+                ? String.format("""
+                    - Аллергии: %s
+                    ВНИМАНИЕ! СТРОГО ЗАПРЕЩЕНО включать в план питания любые блюда, содержащие эти аллергены!
+                    Каждое блюдо должно быть безопасным для пользователя.
+                    """, String.join(", ", user.getAllergies()))
+                : ""
         );
     }
 
@@ -583,6 +591,7 @@ public class AIService {
             - Рост: %.1f см
             - Уровень активности: %s
             - Цель: %s
+            %s
 
             ВАЖНО: Верни ТОЛЬКО валидный JSON, без пояснений, markdown, комментариев и других символов. Никаких пояснений, только JSON!
 
@@ -645,6 +654,13 @@ public class AIService {
             user.getHeight(),
             user.getActivityLevel(),
             user.getGoal(),
+            user.getAllergies() != null && !user.getAllergies().isEmpty() 
+                ? String.format("""
+                    - Аллергии: %s
+                    ВНИМАНИЕ! СТРОГО ЗАПРЕЩЕНО включать в план питания любые блюда, содержащие эти аллергены!
+                    Каждое блюдо должно быть безопасным для пользователя.
+                    """, String.join(", ", user.getAllergies()))
+                : "",
             day,
             day
         );
