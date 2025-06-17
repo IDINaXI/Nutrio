@@ -13,6 +13,9 @@ public class WeightEntry {
     private Double weight;
     private LocalDate date;
 
+    @Transient
+    private String formattedDate;
+
     public WeightEntry() {}
 
     public WeightEntry(Long userId, Double weight, LocalDate date) {
@@ -33,4 +36,7 @@ public class WeightEntry {
 
     public LocalDate getDate() { return date; }
     public void setDate(LocalDate date) { this.date = date; }
+
+    public String getFormattedDate() { return formattedDate; }
+    public void setFormattedDate(String formattedDate) { this.formattedDate = formattedDate; }
 }

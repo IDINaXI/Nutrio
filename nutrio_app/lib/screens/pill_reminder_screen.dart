@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import '../models/pill_reminder.dart';
 import '../services/pill_reminder_service.dart';
 
@@ -134,7 +135,17 @@ class _PillReminderScreenState extends State<PillReminderScreen> {
                                 const SizedBox(width: 12),
                                 TextButton(
                                   onPressed: () => _pickTime(context),
-                                  child: Text(_selectedTime.format(context)),
+                                  child: Text(
+                                    DateFormat('HH:mm').format(
+                                      DateTime(
+                                        DateTime.now().year,
+                                        DateTime.now().month,
+                                        DateTime.now().day,
+                                        _selectedTime.hour,
+                                        _selectedTime.minute,
+                                      ),
+                                    ),
+                                  ),
                                 ),
                               ],
                             ),
@@ -197,7 +208,18 @@ class _PillReminderScreenState extends State<PillReminderScreen> {
                                               children: [
                                                 const Icon(Icons.access_time, size: 16, color: Colors.grey),
                                                 const SizedBox(width: 4),
-                                                Text(r.time, style: const TextStyle(fontSize: 14)),
+                                                Text(
+                                                  DateFormat('HH:mm').format(
+                                                    DateTime(
+                                                      DateTime.now().year,
+                                                      DateTime.now().month,
+                                                      DateTime.now().day,
+                                                      int.parse(r.time.split(':')[0]),
+                                                      int.parse(r.time.split(':')[1]),
+                                                    ),
+                                                  ),
+                                                  style: const TextStyle(fontSize: 14),
+                                                ),
                                                 const SizedBox(width: 12),
                                                 const Icon(Icons.calendar_today, size: 16, color: Colors.grey),
                                                 const SizedBox(width: 4),

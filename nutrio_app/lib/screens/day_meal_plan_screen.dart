@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import '../models/day_meal_plan.dart';
 import '../models/meal.dart';
 import '../services/api_service.dart';
@@ -73,7 +74,7 @@ class _DayMealPlanScreenState extends State<DayMealPlanScreen> {
                         const SizedBox(height: 16),
                         Text('Калорий за день: ${_plan!.totalCalories.toStringAsFixed(1)}'),
                         Text('Б: ${_plan!.macronutrients['protein']?.toStringAsFixed(1) ?? '0'} г, Ж: ${_plan!.macronutrients['fat']?.toStringAsFixed(1) ?? '0'} г, У: ${_plan!.macronutrients['carbs']?.toStringAsFixed(1) ?? '0'} г'),
-                        Text('Дата: ${_plan!.date}'),
+                        Text('Дата: ${DateFormat('dd.MM.yyyy').format(DateTime.parse(_plan!.date))}'),
                       ],
                     ),
     );

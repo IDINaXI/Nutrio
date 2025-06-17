@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:intl/intl.dart';
 import '../models/weight_entry.dart';
 import '../services/weight_service.dart';
 
@@ -118,7 +119,7 @@ class _WeightTrackingScreenState extends State<WeightTrackingScreen> {
                             ListTile(
                               title: const Text('Дата'),
                               subtitle: Text(
-                                '${_selectedDate.day}/${_selectedDate.month}/${_selectedDate.year}',
+                                DateFormat('dd.MM.yyyy').format(_selectedDate),
                               ),
                               trailing: const Icon(Icons.calendar_today),
                               onTap: () => _selectDate(context),

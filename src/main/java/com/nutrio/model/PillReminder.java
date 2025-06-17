@@ -17,6 +17,9 @@ public class PillReminder {
     private LocalTime time; // Время приёма
     private boolean active = true;
 
+    @Transient
+    private String formattedTime;
+
     @ElementCollection(fetch = FetchType.EAGER)
     private List<Integer> daysOfWeek; // 1=Пн, 7=Вс
 
@@ -56,4 +59,7 @@ public class PillReminder {
 
     public boolean isActive() { return active; }
     public void setActive(boolean active) { this.active = active; }
+
+    public String getFormattedTime() { return formattedTime; }
+    public void setFormattedTime(String formattedTime) { this.formattedTime = formattedTime; }
 } 

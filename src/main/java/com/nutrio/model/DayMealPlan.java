@@ -1,5 +1,6 @@
 package com.nutrio.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 
@@ -31,6 +32,9 @@ public class DayMealPlan {
 
     private LocalDate date = LocalDate.now();
 
+    @Transient
+    private String formattedDate;
+
     // Геттеры и сеттеры
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -50,4 +54,6 @@ public class DayMealPlan {
     public void setUser(User user) { this.user = user; }
     public LocalDate getDate() { return date; }
     public void setDate(LocalDate date) { this.date = date; }
+    public String getFormattedDate() { return formattedDate; }
+    public void setFormattedDate(String formattedDate) { this.formattedDate = formattedDate; }
 } 

@@ -22,6 +22,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 @Slf4j
 @Service
@@ -277,6 +279,8 @@ public class MealPlanService {
             plan.setTotalCalories(((Number) data.get("totalCalories")).intValue());
             plan.setMacronutrients(objectMapper.convertValue(data.get("macronutrients"), MealPlan.Macronutrients.class));
             plan.setUser(user);
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy", new Locale("ru", "RU"));
+            plan.setFormattedDate(plan.getDate().format(formatter));
             return plan;
         } catch (Exception e) {
             logger.error("Error parsing AI response: {}", e.getMessage());
