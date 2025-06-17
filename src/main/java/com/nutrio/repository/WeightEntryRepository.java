@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface WeightEntryRepository extends JpaRepository<WeightEntry, Long> {
     List<WeightEntry> findByUserIdOrderByDateAsc(Long userId);
+    List<WeightEntry> findByUserIdOrderByDateDesc(Long userId);
 }
