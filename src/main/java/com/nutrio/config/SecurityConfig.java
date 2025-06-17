@@ -53,10 +53,9 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOriginPatterns(Arrays.asList(
-            "http://192.168.100.112:[*]",
+            "https://nutrio-production.up.railway.app",
             "http://localhost:[*]",
-            "http://127.0.0.1:[*]",
-            "https://nutrio-production.up.railway.app"
+            "http://127.0.0.1:[*]"
         ));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         configuration.setAllowedHeaders(Arrays.asList("*"));

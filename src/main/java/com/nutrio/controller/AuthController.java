@@ -16,10 +16,9 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "Authentication", description = "Endpoints for user registration and login")
 @CrossOrigin(
     originPatterns = {
-        "http://172.20.10.2:[*]",
+        "https://nutrio-production.up.railway.app",
         "http://localhost:[*]",
-        "http://127.0.0.1:[*]",
-        "http://192.168.100.112:[*]"
+        "http://127.0.0.1:[*]"
     },
     allowedHeaders = {"Authorization", "Content-Type", "X-Requested-With", "Accept", "Origin"},
     allowCredentials = "true"

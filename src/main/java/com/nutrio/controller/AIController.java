@@ -17,7 +17,7 @@ import java.util.Map;
 @RequestMapping("/api/ai")
 @CrossOrigin(
     originPatterns = {
-        "http://192.168.100.112:[*]",
+        "https://nutrio-production.up.railway.app",
         "http://127.0.0.1:[*]"
     },
     allowedHeaders = {"Authorization", "Content-Type", "X-Requested-With", "Accept", "Origin"},

@@ -34,7 +34,7 @@ import java.util.Comparator;
 @Tag(name = "Meal Plans", description = "API for managing meal plans")
 @SecurityRequirement(name = "bearerAuth")
 @CrossOrigin(origins = {
-    "http://192.168.100.112:3000",
+    "https://nutrio-production.up.railway.app",
     "http://127.0.0.1:3000"
 })
 public class MealPlanController {
