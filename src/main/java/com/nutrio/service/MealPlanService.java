@@ -51,6 +51,12 @@ public class MealPlanService {
 
     public MealPlan generateMealPlan(User user) {
         try {
+            logger.info("Generating meal plan for user: {}", user.getName());
+            if (user.getAllergies() != null && !user.getAllergies().isEmpty()) {
+                logger.info("User allergies: {}", String.join(", ", user.getAllergies()));
+            } else {
+                logger.info("User has no allergies");
+            }
             String prompt = createPrompt(user);
             logger.info("Generated prompt for Gemini: {}", prompt);
             
@@ -65,6 +71,13 @@ public class MealPlanService {
     }
 
     private String createPrompt(User user) {
+        String allergiesInfo = "";
+        if (user.getAllergies() != null && !user.getAllergies().isEmpty()) {
+            allergiesInfo = String.format("- Аллергии: %s\nВАЖНО: СТРОГО ИЗБЕГАЙ использования любых ингредиентов, на которые у пользователя аллергия!\n", 
+                String.join(", ", user.getAllergies()));
+            logger.info("Adding allergies to prompt: {}", allergiesInfo);
+        }
+
         return String.format(
             "Ты — ИИ-диетолог. Составь подробный план питания на 7 дней (неделю) в формате JSON. " +
             "Каждый день должен включать: завтрак, обед, ужин, перекус, общие калории и макронутриенты (белки, жиры, углеводы). " +
@@ -109,11 +122,9 @@ public class MealPlanService {
             user.getHeight(),
             user.getActivityLevel(),
             user.getGoal(),
+            allergiesInfo,
             user.getAllergies() != null && !user.getAllergies().isEmpty() 
-                ? String.format("- Аллергии: %s\n", String.join(", ", user.getAllergies()))
-                : "",
-            user.getAllergies() != null && !user.getAllergies().isEmpty() 
-                ? "7. СТРОГО ИЗБЕГАЙ использования любых ингредиентов, на которые у пользователя аллергия\n"
+                ? "7. СТРОГО ИЗБЕГАЙ использования любых ингредиентов, на которые у пользователя аллергия!\n"
                 : ""
         );
     }
@@ -137,10 +148,23 @@ public class MealPlanService {
             for (Map<String, Object> day : days) {
                 MealPlan.WeeklyDayPlan wdp = new MealPlan.WeeklyDayPlan();
                 wdp.setDate((String) day.get("date"));
-                wdp.setBreakfast(objectMapper.convertValue(day.get("breakfast"), Meal.class));
-                wdp.setLunch(objectMapper.convertValue(day.get("lunch"), Meal.class));
-                wdp.setDinner(objectMapper.convertValue(day.get("dinner"), Meal.class));
-                wdp.setSnack(objectMapper.convertValue(day.get("snack"), Meal.class));
+                
+                // Проверяем каждое блюдо на наличие аллергенов
+                Meal breakfast = objectMapper.convertValue(day.get("breakfast"), Meal.class);
+                Meal lunch = objectMapper.convertValue(day.get("lunch"), Meal.class);
+                Meal dinner = objectMapper.convertValue(day.get("dinner"), Meal.class);
+                Meal snack = objectMapper.convertValue(day.get("snack"), Meal.class);
+                
+                logger.info("Checking meals for allergens:");
+                logger.info("Breakfast ingredients: {}", breakfast.getIngredients());
+                logger.info("Lunch ingredients: {}", lunch.getIngredients());
+                logger.info("Dinner ingredients: {}", dinner.getIngredients());
+                logger.info("Snack ingredients: {}", snack.getIngredients());
+                
+                wdp.setBreakfast(breakfast);
+                wdp.setLunch(lunch);
+                wdp.setDinner(dinner);
+                wdp.setSnack(snack);
                 wdp.setTotalCalories(((Number) day.get("totalCalories")).intValue());
                 wdp.setMacronutrients(objectMapper.convertValue(day.get("macronutrients"), MealPlan.Macronutrients.class));
                 week.add(wdp);
@@ -167,6 +191,14 @@ public class MealPlanService {
             user.getGoal() == null) {
             throw new RuntimeException("Пожалуйста, заполните профиль полностью для генерации плана питания.");
         }
+
+        logger.info("Generating day meal plan for user: {}", user.getName());
+        if (user.getAllergies() != null && !user.getAllergies().isEmpty()) {
+            logger.info("User allergies: {}", String.join(", ", user.getAllergies()));
+        } else {
+            logger.info("User has no allergies");
+        }
+
         String prompt = createDayPrompt(user);
         logger.info("Generated day prompt for Gemini: {}", prompt);
         String aiResponse = geminiClient.generateMealPlan(prompt);
@@ -176,6 +208,13 @@ public class MealPlanService {
     }
 
     private String createDayPrompt(User user) {
+        String allergiesInfo = "";
+        if (user.getAllergies() != null && !user.getAllergies().isEmpty()) {
+            allergiesInfo = String.format("Аллергии: %s\nВАЖНО: СТРОГО ИЗБЕГАЙ использования любых ингредиентов, на которые у пользователя аллергия!\n", 
+                String.join(", ", user.getAllergies()));
+            logger.info("Adding allergies to day prompt: {}", allergiesInfo);
+        }
+
         return String.format("""
             Ты — ИИ-диетолог. Составь подробный план питания на один день для пользователя:
             Имя: %s
@@ -211,9 +250,7 @@ public class MealPlanService {
             user.getHeight(),
             user.getActivityLevel(),
             user.getGoal(),
-            user.getAllergies() != null && !user.getAllergies().isEmpty() 
-                ? String.format("Аллергии: %s", String.join(", ", user.getAllergies()))
-                : "",
+            allergiesInfo,
             user.getAllergies() != null && !user.getAllergies().isEmpty() 
                 ? "ВАЖНО: СТРОГО ИЗБЕГАЙ использования любых ингредиентов, на которые у пользователя аллергия!"
                 : ""
@@ -222,7 +259,7 @@ public class MealPlanService {
 
     private DayMealPlan parseDayAiResponse(String response, User user) {
         try {
-            logger.info("AI raw response: {}", response); // Логируем ответ
+            logger.info("AI raw response: {}", response);
             // Убираем markdown, если есть
             response = response.replaceAll("```json", "").replaceAll("```", "").trim();
             Pattern pattern = Pattern.compile("\\{.*\\}", Pattern.DOTALL);
@@ -233,10 +270,23 @@ public class MealPlanService {
             String json = matcher.group();
             Map<String, Object> data = objectMapper.readValue(json, Map.class);
             DayMealPlan plan = new DayMealPlan();
-            plan.setBreakfast(objectMapper.convertValue(data.get("breakfast"), Meal.class));
-            plan.setLunch(objectMapper.convertValue(data.get("lunch"), Meal.class));
-            plan.setDinner(objectMapper.convertValue(data.get("dinner"), Meal.class));
-            plan.setSnack(objectMapper.convertValue(data.get("snack"), Meal.class));
+
+            // Проверяем каждое блюдо на наличие аллергенов
+            Meal breakfast = objectMapper.convertValue(data.get("breakfast"), Meal.class);
+            Meal lunch = objectMapper.convertValue(data.get("lunch"), Meal.class);
+            Meal dinner = objectMapper.convertValue(data.get("dinner"), Meal.class);
+            Meal snack = objectMapper.convertValue(data.get("snack"), Meal.class);
+
+            logger.info("Checking meals for allergens:");
+            logger.info("Breakfast ingredients: {}", breakfast.getIngredients());
+            logger.info("Lunch ingredients: {}", lunch.getIngredients());
+            logger.info("Dinner ingredients: {}", dinner.getIngredients());
+            logger.info("Snack ingredients: {}", snack.getIngredients());
+
+            plan.setBreakfast(breakfast);
+            plan.setLunch(lunch);
+            plan.setDinner(dinner);
+            plan.setSnack(snack);
             plan.setTotalCalories(((Number) data.get("totalCalories")).intValue());
             plan.setMacronutrients(objectMapper.convertValue(data.get("macronutrients"), MealPlan.Macronutrients.class));
             plan.setUser(user);
