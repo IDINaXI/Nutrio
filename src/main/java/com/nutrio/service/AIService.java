@@ -120,9 +120,14 @@ public class AIService {
         if (allergies == null || allergies.isEmpty()) {
             return false;
         }
-        return ingredients.stream()
+        logger.info("Checking ingredients: {} against allergies: {}", ingredients, allergies);
+        boolean contains = ingredients.stream()
             .anyMatch(ingredient -> allergies.stream()
                 .anyMatch(allergy -> ingredient.toLowerCase().contains(allergy.toLowerCase())));
+        if (contains) {
+            logger.info("Found allergen in ingredients!");
+        }
+        return contains;
     }
 
     private List<Meal> generateLunch(User user, Map<String, Double> macros) {
