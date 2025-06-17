@@ -4,7 +4,7 @@ import '../models/pill_reminder.dart';
 import 'auth_service.dart';
 
 class PillReminderService {
-  static const String baseUrl = 'http://192.168.100.112:8080/api/pill-reminders';
+  static const String baseUrl = 'https://nutrio-production.up.railway.app/api/pill-reminders';
 
   String? _getToken() => AuthService().token;
 

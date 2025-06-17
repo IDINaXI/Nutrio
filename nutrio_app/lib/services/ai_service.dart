@@ -9,7 +9,7 @@ class AIService {
   factory AIService() => _instance;
   AIService._internal();
 
-  static const String baseUrl = 'http://172.20.10.2:8080/api';
+  static const String baseUrl = 'https://nutrio-production.up.railway.app/api';
   String? token;
 
   Map<String, String> get _headers {

@@ -4,7 +4,7 @@ import '../models/body_measurement.dart';
 import 'auth_service.dart';
 
 class BodyMeasurementService {
-  static const String baseUrl = 'http://192.168.100.112:8080/api/body-measurements';
+  static const String baseUrl = 'https://nutrio-production.up.railway.app/api/body-measurements';
 
   String? _getToken() {
     return AuthService().token;

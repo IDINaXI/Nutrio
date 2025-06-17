@@ -10,7 +10,7 @@ class ApiService {
   factory ApiService() => _instance;
   ApiService._internal();
 
-  static const String baseUrl = 'http://192.168.100.112:8080/api';
+  static const String baseUrl = 'https://nutrio-production.up.railway.app/api';
   String? _token;
 
   void setToken(String token) {
