@@ -9,9 +9,11 @@ import 'screens/day_meal_plan_screen.dart';
 import 'services/auth_service.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:intl/intl_standalone.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await findSystemLocale();
   await AuthService().init();
   runApp(const MyApp());
 }
