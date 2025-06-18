@@ -237,7 +237,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     Icon(Icons.eco, color: Theme.of(context).colorScheme.primary),
                     const SizedBox(width: 8),
-                    const Text('Nutrio'),
+                    const Text('Nutrio', style: TextStyle(color: Colors.red)),
                   ],
                 ),
                 actions: [
