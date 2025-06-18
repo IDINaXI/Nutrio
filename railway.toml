@@ -1,10 +1,10 @@
 [build]
 builder = "nixpacks"
-buildCommand = "mvn clean package -DskipTests"
+buildCommand = "cd nutrio_app && flutter build web --release"
 
 [deploy]
-startCommand = "java -jar target/Nutrio-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod"
-healthcheckPath = "/health"
+startCommand = "cd nutrio_app/build/web && npx serve -s ."
+healthcheckPath = "/"
 healthcheckTimeout = 100
 restartPolicyType = "always"
 restartPolicyMaxRetries = 10 
