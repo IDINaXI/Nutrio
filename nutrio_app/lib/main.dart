@@ -84,7 +84,6 @@ class MyApp extends StatelessWidget {
       ],
       supportedLocales: const [
         Locale('ru'),
-        Locale('en'),
       ],
       locale: Locale('ru'),
       initialRoute: '/',
