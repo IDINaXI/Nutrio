@@ -450,7 +450,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           TextFormField(
                             controller: _allergiesController,
                             decoration: const InputDecoration(
-                              labelText: 'Аллергии и продукты, которые не нравятся',
+                              labelText: 'Аллергии и продукты, которые не нравятся [DEPLOY TEST 14:40]',
                               hintText: 'Например: орехи, молоко, яйца, рыба',
                               prefixIcon: Icon(Icons.warning_amber_outlined),
                             ),
