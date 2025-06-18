@@ -8,6 +8,7 @@ import 'screens/splash_screen.dart';
 import 'screens/day_meal_plan_screen.dart';
 import 'services/auth_service.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -74,6 +75,16 @@ class MyApp extends StatelessWidget {
           color: Colors.white,
         ),
       ),
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('ru'),
+        Locale('en'),
+      ],
+      locale: Locale('ru'),
       initialRoute: '/',
       routes: {
         '/': (context) => const SplashScreen(),
