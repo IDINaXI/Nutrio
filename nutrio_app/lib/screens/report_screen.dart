@@ -3,7 +3,6 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'dart:html';
 import '../services/auth_service.dart';
-import 'custom_date_picker.dart';
 
 class ReportScreen extends StatefulWidget {
   final int userId;
@@ -20,11 +19,15 @@ class _ReportScreenState extends State<ReportScreen> {
   String? _status;
 
   Future<void> _pickDate(BuildContext context, bool isFrom) async {
-    final DateTime? picked = await showCustomDatePicker(
+    final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: isFrom ? _from : _to,
       firstDate: DateTime(2020),
       lastDate: DateTime.now(),
+      helpText: 'Выберите дату',
+      cancelText: 'Отмена',
+      confirmText: 'ОК',
+      locale: const Locale('ru'),
     );
     if (picked != null) {
       setState(() {

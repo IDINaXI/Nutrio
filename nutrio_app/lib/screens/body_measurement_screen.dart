@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import '../models/body_measurement.dart';
 import '../services/body_measurement_service.dart';
-import 'custom_date_picker.dart';
 
 class BodyMeasurementScreen extends StatefulWidget {
   final int userId;
@@ -79,11 +78,15 @@ class _BodyMeasurementScreenState extends State<BodyMeasurementScreen> {
   }
 
   Future<void> _selectDate(BuildContext context) async {
-    final DateTime? picked = await showCustomDatePicker(
+    final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: _selectedDate,
       firstDate: DateTime(2000),
       lastDate: DateTime.now(),
+      helpText: 'Выберите дату',
+      cancelText: 'Отмена',
+      confirmText: 'ОК',
+      locale: const Locale('ru'),
     );
     if (picked != null && picked != _selectedDate) {
       setState(() {

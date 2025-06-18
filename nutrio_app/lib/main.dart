@@ -10,12 +10,10 @@ import 'services/auth_service.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl_standalone.dart';
-import 'package:intl/date_symbol_data_local.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await findSystemLocale();
-  await initializeDateFormatting('ru_RU', null);
   await AuthService().init();
   runApp(const MyApp());
 }
