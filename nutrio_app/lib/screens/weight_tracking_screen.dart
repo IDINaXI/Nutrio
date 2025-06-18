@@ -68,6 +68,10 @@ class _WeightTrackingScreenState extends State<WeightTrackingScreen> {
       initialDate: _selectedDate,
       firstDate: DateTime(2000),
       lastDate: DateTime.now(),
+      helpText: 'Выберите дату',
+      cancelText: 'Отмена',
+      confirmText: 'ОК',
+      locale: const Locale('ru'),
     );
     if (picked != null && picked != _selectedDate) {
       setState(() {

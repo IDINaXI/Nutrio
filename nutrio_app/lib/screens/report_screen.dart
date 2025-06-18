@@ -24,6 +24,10 @@ class _ReportScreenState extends State<ReportScreen> {
       initialDate: isFrom ? _from : _to,
       firstDate: DateTime(2020),
       lastDate: DateTime.now(),
+      helpText: 'Выберите дату',
+      cancelText: 'Отмена',
+      confirmText: 'ОК',
+      locale: const Locale('ru'),
     );
     if (picked != null) {
       setState(() {

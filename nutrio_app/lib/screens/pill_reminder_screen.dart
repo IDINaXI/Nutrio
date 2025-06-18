@@ -83,6 +83,9 @@ class _PillReminderScreenState extends State<PillReminderScreen> {
     final TimeOfDay? picked = await showTimePicker(
       context: context,
       initialTime: _selectedTime,
+      helpText: 'Выберите время',
+      cancelText: 'Отмена',
+      confirmText: 'ОК',
     );
     if (picked != null && picked != _selectedTime) {
       setState(() {
