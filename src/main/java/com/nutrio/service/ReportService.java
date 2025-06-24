@@ -40,8 +40,8 @@ public class ReportService {
     @Autowired private PillReminderRepository pillReminderRepository;
 
     // Цвета для дизайна
-    private static final BaseColor PRIMARY_COLOR = new BaseColor(52, 152, 219); // Синий
-    private static final BaseColor SECONDARY_COLOR = new BaseColor(46, 204, 113); // Зелёный
+    private static final BaseColor PRIMARY_COLOR = new BaseColor(46, 204, 113); // Зелёный
+    private static final BaseColor SECONDARY_COLOR = new BaseColor(52, 152, 219); // Синий
     private static final BaseColor ACCENT_COLOR = new BaseColor(155, 89, 182); // Фиолетовый
     private static final BaseColor LIGHT_GRAY = new BaseColor(245, 245, 245);
     private static final BaseColor DARK_GRAY = new BaseColor(52, 73, 94);
@@ -55,8 +55,9 @@ public class ReportService {
 
     public ReportService() {
         try {
-            // Создаём шрифты с поддержкой кириллицы
-            BaseFont baseFont = BaseFont.createFont("Helvetica", "Cp1251", BaseFont.NOT_EMBEDDED);
+            // Используем Montserrat-Regular.ttf с поддержкой кириллицы
+            String fontPath = "src/main/resources/fonts/FreeSans.ttf";
+            BaseFont baseFont = BaseFont.createFont(fontPath, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
             titleFont = new com.itextpdf.text.Font(baseFont, 24, com.itextpdf.text.Font.BOLD);
             titleFont.setColor(PRIMARY_COLOR);
             subtitleFont = new com.itextpdf.text.Font(baseFont, 16, com.itextpdf.text.Font.BOLD);
